@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 int width = 800;
-int height = 300;
+int height = 512;
 
 const int SUBSETS = 5;
 
@@ -77,15 +77,17 @@ struct colors get_colors(int x, int max) {
 struct colors set_hue(int y, int max, struct colors subset_colors) {
   struct colors new_subset_colors;
 
-  new_subset_colors = subset_colors;
-
-  /*int middle = max/2;
+  int middle = max/2;
   int delta = y - middle;
-  if delta <=0 {
-
+  if (delta <= 0) {
+    new_subset_colors.r += -delta*(255-subset_colors.r)/middle;
+    new_subset_colors.g += -delta*(255-subset_colors.g)/middle;
+    new_subset_colors.b += -delta*(255-subset_colors.b)/middle;
   } else {
-
-  }*/
+    new_subset_colors.r = (max-y)*subset_colors.r/middle;
+    new_subset_colors.g = (max-y)*subset_colors.g/middle;
+    new_subset_colors.b = (max-y)*subset_colors.b/middle;
+  }
 
   return new_subset_colors;
 }
@@ -94,9 +96,9 @@ static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer data) {
   cairo_set_line_width(cr, 1);
 
   double max = 255;
-  int r, g, b, x, y;
+  int x, y;
   for (x = 0; x < width; x++) {
-    for (y = 0; y < width; y++) {
+    for (y = 0; y < height; y++) {
       struct colors c = set_hue(y, height, get_colors(x, width));
       cairo_set_source_rgb(cr, (double)c.r / max, (double)c.g / max, (double)c.b / max);
       cairo_rectangle(cr, x, y, 1, 1);
@@ -117,11 +119,11 @@ int main(int argc, char **argv) {
 
   g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
-  gtk_window_set_default_size(GTK_WINDOW(window), width, 512);
+  gtk_window_set_default_size(GTK_WINDOW(window), width, height);
 
   GtkWidget *da;
   da = gtk_drawing_area_new();
-  gtk_widget_set_size_request(da, width, 512);
+  gtk_widget_set_size_request(da, width, height);
   g_signal_connect(da, "draw", G_CALLBACK(on_draw_event), NULL);
 
   gtk_container_add(GTK_CONTAINER(window), da);
