@@ -74,6 +74,22 @@ struct colors get_colors(int x, int max) {
   return subset_colors;
 }
 
+struct colors set_hue(int y, int max, struct colors subset_colors) {
+  struct colors new_subset_colors;
+
+  new_subset_colors = subset_colors;
+
+  /*int middle = max/2;
+  int delta = y - middle;
+  if delta <=0 {
+
+  } else {
+
+  }*/
+
+  return new_subset_colors;
+}
+
 static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer data) {
   cairo_set_line_width(cr, 1);
 
@@ -81,7 +97,7 @@ static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer data) {
   int r, g, b, x, y;
   for (x = 0; x < width; x++) {
     for (y = 0; y < width; y++) {
-      struct colors c = get_colors(x, width);
+      struct colors c = set_hue(y, height, get_colors(x, width));
       cairo_set_source_rgb(cr, (double)c.r / max, (double)c.g / max, (double)c.b / max);
       cairo_rectangle(cr, x, y, 1, 1);
       cairo_fill(cr);

@@ -10,3 +10,4 @@ struct colors {
 static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer data);
 int determine_subset(int x, int max);
 struct colors get_colors(int x, int max);
+struct colors set_hue(int y, int max, struct colors subset_colors);
