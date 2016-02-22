@@ -106,21 +106,6 @@ struct colors get_colors(int x, int max) {
 static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer data) {
   cairo_set_line_width(cr, 1);
 
-  /*int r, g, b, x, y;
-  double max = 255;
-  for (r = 0; r < 256; r++) {
-    for (g = 0; g < 256; g++) {
-      for (b = 0; b < 256; b++) {
-        cairo_set_source_rgb(cr, (double)r / max, (double)g / max,
-                             (double)b / max);
-        cairo_rectangle(cr, x, y, 1, 1);
-        cairo_fill(cr);
-      }
-      y++;
-    }
-    x++;
-  }*/
-
   double max = 255;
   int r, g, b, x, y;
   for (x = 0; x < width; x++) {
@@ -132,16 +117,10 @@ static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer data) {
     }
   }
 
-
-
   return FALSE;
 }
 
 int main(int argc, char **argv) {
-  /*struct colors c = get_colors(430, 512);
-  printf("===>> %d, %d, %d\n", c.r, c.g, c.b);
-  return 0;*/
-
   GtkWidget *window;
 
   gtk_init(&argc, &argv);
