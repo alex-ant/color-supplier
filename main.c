@@ -32,18 +32,18 @@ struct colors get_colors(int x, int max) {
       color_start = -subset_size;
       delta = x - color_start;
 
-      subset_colors.r = 0;
+      subset_colors.r = delta*255/(subset_size*2);
       subset_colors.g = 0;
-      subset_colors.b = delta*255/(subset_size*2);
+      subset_colors.b = 0;
       break;
 
       case 2:
       color_start = subset_size;
       delta = x - color_start;
 
-      subset_colors.r = 0;
+      subset_colors.r = 255;
       subset_colors.g = delta*255/subset_size;
-      subset_colors.b = 255;
+      subset_colors.b = 0;
       break;
 
       case 3:
@@ -53,27 +53,27 @@ struct colors get_colors(int x, int max) {
       color_start2 = subset_size*2;
       delta2 = x - color_start2;
 
-      subset_colors.r = delta2*255/subset_size;
+      subset_colors.r = (subset_size - delta)*255/subset_size;
       subset_colors.g = 255;
-      subset_colors.b = (subset_size - delta)*255/subset_size;
+      subset_colors.b = delta2*255/subset_size;
       break;
 
       case 4:
       color_start = subset_size*3;
       delta = x - color_start;
 
-      subset_colors.r = 255;
+      subset_colors.r = 0;
       subset_colors.g = (subset_size - delta)*255/subset_size;
-      subset_colors.b = 0;
+      subset_colors.b = 255;
       break;
 
       case 5:
       color_start = subset_size*4;
       delta = x - color_start;
 
-      subset_colors.r = (subset_size*2 - delta)*255/(subset_size*2);
+      subset_colors.r = 0;
       subset_colors.g = 0;
-      subset_colors.b = 0;
+      subset_colors.b = (subset_size*2 - delta)*255/(subset_size*2);
       break;
   }
 
