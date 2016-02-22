@@ -1,7 +1,21 @@
 #include "main.h"
 
-static gboolean on_draw_event(GtkWidget *widget, cairo_t *window_cr,
-                              gpointer data) {
+static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer data) {
+  cairo_set_line_width(cr, 1);
+
+  int r, g, b;
+  double max = 255;
+  for (r = 0; r < 256; r++) {
+    for (g = 0; g < 256; g++) {
+      for (b = 0; b < 256; b++) {
+        cairo_set_source_rgb(cr, (double)r / max, (double)g / max,
+                             (double)b / max);
+        cairo_rectangle(cr, i, j, (double)i / max, (double)j / max);
+        cairo_fill(cr);
+      }
+    }
+  }
+
   return FALSE;
 }
 
@@ -25,6 +39,8 @@ int main(int argc, char **argv) {
   gtk_container_add(GTK_CONTAINER(window), da);
 
   gtk_widget_show_all(window);
+
+  gtk_widget_queue_draw(da);
 
   gtk_main();
 
