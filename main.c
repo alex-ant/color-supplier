@@ -5,8 +5,8 @@
 int width = 800;
 int height = 512;
 
-const int SUBSETS = 6;
-subset subsets[6];
+const int SUBSETS = 8;
+subset subsets[8];
 
 int determine_subset(int x, int max) {
   int i;
@@ -19,7 +19,7 @@ int determine_subset(int x, int max) {
 }
 
 void init_subsets() {
-  double borders[] = {0.17, 0.33, 0.5, 0.66, 0.83, 1};
+  double borders[] = {0.08, 0.25, 0.42, 0.5, 0.67, 0.83, 0.92, 1};
   subset s;
   int i;
   for (i = 0; i < SUBSETS; i++) {
@@ -46,10 +46,7 @@ struct colors get_colors(int x, int max) {
 
   switch (subset) {
   case 0:
-    color_start = -subset_size;
-    delta = x - color_start;
-
-    subset_colors.r = delta * 255 / (subset_size * 2);
+    subset_colors.r = 255;
     break;
 
   case 1:
@@ -64,15 +61,23 @@ struct colors get_colors(int x, int max) {
     color_start = subsets[subset - 1].end;
     delta = x - color_start;
 
-    color_start2 = subsets[subset - 1].end;
-    delta2 = x - color_start2;
-
     subset_colors.r = (subset_size - delta) * 255 / subset_size;
     subset_colors.g = 255;
-    subset_colors.b = delta2 * 255 / subset_size;
     break;
 
   case 3:
+    subset_colors.g = 255;
+    break;
+
+  case 4:
+    color_start = subsets[subset - 1].end;
+    delta = x - color_start;
+
+    subset_colors.g = 255;
+    subset_colors.b = delta * 255 / subset_size;
+    break;
+
+  case 5:
     color_start = subsets[subset - 1].end;
     delta = x - color_start;
 
@@ -80,23 +85,16 @@ struct colors get_colors(int x, int max) {
     subset_colors.b = 255;
     break;
 
-  case 4:
-    color_start = subsets[subset - 1].end;
-    delta = x - color_start;
-
-    subset_colors.b = (subset_size * 2 - delta) * 255 / (subset_size * 2);
+  case 6:
+    subset_colors.b = 255;
     break;
 
-  case 5:
+  case 7:
     color_start = subsets[subset - 1].end;
     delta = x - color_start;
 
-    color_start2 = subsets[subset - 2].end;
-    delta2 = x - color_start2;
-
-    subset_colors.r = delta * 255 / (subset_size * 2);
-    subset_colors.b = (subset_size * 2 - delta2) * 255 / (subset_size * 2);
-
+    subset_colors.r = delta * 255 / subset_size;
+    subset_colors.b = 255;
     break;
   }
 
