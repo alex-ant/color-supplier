@@ -6,6 +6,11 @@ int width = 800;
 int height = 512;
 int status_height = 20;
 
+GtkWidget *da;
+GtkWidget *status_bar;
+
+struct colors active_color;
+
 const int SUBSETS = 8;
 subset subsets[8];
 
@@ -125,7 +130,7 @@ struct colors set_hue(int y, int max, struct colors subset_colors) {
   return new_subset_colors;
 }
 
-static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer data) {
+static gboolean on_da_draw_event(GtkWidget *widget, cairo_t *cr, gpointer data) {
   cairo_set_line_width(cr, 1);
 
   double max = 255;
@@ -145,9 +150,19 @@ static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer data) {
   return FALSE;
 }
 
+static gboolean on_status_draw_event(GtkWidget *widget, cairo_t *cr, gpointer data) {
+  double max = 255;
+  cairo_set_source_rgb(cr, (double)active_color.r / max, (double)active_color.g / max,
+                       (double)active_color.b / max);
+  cairo_paint(cr);
+
+  return FALSE;
+}
+
 void print_coordinate_colors(int x, int y) {
-  struct colors c = set_hue(y, height, get_colors(x, width));
-  printf("R: %d, G: %d, B: %d\n", c.r, c.g, c.b);
+  active_color = set_hue(y, height, get_colors(x, width));
+  gtk_widget_queue_draw(status_bar);
+  printf("R: %d, G: %d, B: %d\n", active_color.r, active_color.g, active_color.b);
 }
 
 static gboolean on_press_event(GtkWidget *widget, GdkEventButton *event, gpointer data) {
@@ -191,11 +206,10 @@ int main(int argc, char **argv) {
 
   gtk_window_set_default_size(GTK_WINDOW(window), width, height + status_height);
 
-  GtkWidget *da;
   da = gtk_drawing_area_new();
   gtk_widget_set_size_request(da, width, height);
 
-  g_signal_connect(da, "draw", G_CALLBACK(on_draw_event), NULL);
+  g_signal_connect(da, "draw", G_CALLBACK(on_da_draw_event), NULL);
   g_signal_connect(da, "button-press-event", G_CALLBACK (on_press_event), NULL);
   g_signal_connect(da, "button-release-event", G_CALLBACK (on_release_event), NULL);
   g_signal_connect(da, "motion-notify-event", G_CALLBACK (on_motion_event), NULL);
@@ -204,9 +218,9 @@ int main(int argc, char **argv) {
                                                        | GDK_BUTTON_RELEASE_MASK
                                                        | GDK_POINTER_MOTION_MASK);
 
-  GtkWidget *status_bar;
   status_bar = gtk_drawing_area_new();
   gtk_widget_set_size_request(status_bar, width, status_height);
+  g_signal_connect(status_bar, "draw", G_CALLBACK(on_status_draw_event), NULL);
 
   GtkWidget *fixed;
   fixed = gtk_fixed_new();
