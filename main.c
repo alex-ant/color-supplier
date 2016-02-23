@@ -8,6 +8,8 @@ int height = 512;
 const int SUBSETS = 8;
 subset subsets[8];
 
+int dragging = 0;
+
 int determine_subset(int x, int max) {
   int i;
   for (i = 0; i < SUBSETS; i++) {
@@ -142,6 +144,32 @@ static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer data) {
   return FALSE;
 }
 
+static gboolean on_press_event(GtkWidget *widget, GdkEventButton *event, gpointer data) {
+  if (event->button == GDK_BUTTON_PRIMARY) {
+    dragging = 1;
+    int x = (int)event->x;
+    int y = (int)event->y;
+    printf("aa %d, %d\n", x, y);
+  }
+  return TRUE;
+}
+
+static gboolean on_release_event(GtkWidget *widget, GdkEventButton *event, gpointer data) {
+  if (event->button == GDK_BUTTON_PRIMARY) {
+    dragging = 0;
+  }
+  return TRUE;
+}
+
+static gboolean on_motion_event(GtkWidget *widget, GdkEventMotion *event, gpointer data) {
+  if (dragging == 1) {
+    int x = (int)event->x;
+    int y = (int)event->y;
+    printf("cc %d, %d\n", x, y);
+  }
+  return TRUE;
+}
+
 int main(int argc, char **argv) {
   if (argc == 3) {
     width = atoi(argv[1]);
@@ -164,7 +192,15 @@ int main(int argc, char **argv) {
   GtkWidget *da;
   da = gtk_drawing_area_new();
   gtk_widget_set_size_request(da, width, height);
+
   g_signal_connect(da, "draw", G_CALLBACK(on_draw_event), NULL);
+  g_signal_connect(da, "button-press-event", G_CALLBACK (on_press_event), NULL);
+  g_signal_connect(da, "button-release-event", G_CALLBACK (on_release_event), NULL);
+  g_signal_connect(da, "motion-notify-event", G_CALLBACK (on_motion_event), NULL);
+
+  gtk_widget_set_events (da, gtk_widget_get_events(da) | GDK_BUTTON_PRESS_MASK
+                                                       | GDK_BUTTON_RELEASE_MASK
+                                                       | GDK_POINTER_MOTION_MASK);
 
   gtk_container_add(GTK_CONTAINER(window), da);
 
