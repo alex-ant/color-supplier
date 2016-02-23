@@ -5,8 +5,8 @@
 int width = 800;
 int height = 512;
 
-const int SUBSETS = 5;
-subset subsets[5];
+const int SUBSETS = 6;
+subset subsets[6];
 
 int determine_subset(int x, int max) {
   int i;
@@ -19,7 +19,7 @@ int determine_subset(int x, int max) {
 }
 
 void init_subsets() {
-  double borders[] = {0.12, 0.34, 0.66, 0.84, 1};
+  double borders[] = {0.17, 0.33, 0.5, 0.66, 0.83, 1};
   subset s;
   int i;
   for (i = 0; i < SUBSETS; i++) {
@@ -85,6 +85,18 @@ struct colors get_colors(int x, int max) {
     delta = x - color_start;
 
     subset_colors.b = (subset_size * 2 - delta) * 255 / (subset_size * 2);
+    break;
+
+  case 5:
+    color_start = subsets[subset - 1].end;
+    delta = x - color_start;
+
+    color_start2 = subsets[subset - 2].end;
+    delta2 = x - color_start2;
+
+    subset_colors.r = delta * 255 / (subset_size * 2);
+    subset_colors.b = (subset_size * 2 - delta2) * 255 / (subset_size * 2);
+
     break;
   }
 
