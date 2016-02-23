@@ -6,15 +6,31 @@ int width = 800;
 int height = 512;
 
 const int SUBSETS = 5;
+subset subsets[5];
 
 int determine_subset(int x, int max) {
   int i;
-  for (i = 1; i <= SUBSETS; i++) {
-    if (x >= max * (i - 1) / SUBSETS && x <= max * i / SUBSETS) {
+  for (i = 0; i < SUBSETS; i++) {
+    if (x >= subsets[i].start && x <= subsets[i].end) {
       return i;
     }
   }
   return 0;
+}
+
+void init_subsets() {
+  double borders[] = {0.12, 0.34, 0.66, 0.84, 1};
+  subset s;
+  int i;
+  for (i = 0; i < SUBSETS; i++) {
+    if (i == 0) {
+      s.start = 0;
+    } else {
+      s.start = subsets[i - 1].end + 1;
+    }
+    s.end = width * borders[i];
+    subsets[i] = s;
+  }
 }
 
 struct colors get_colors(int x, int max) {
@@ -24,31 +40,31 @@ struct colors get_colors(int x, int max) {
   subset_colors.b = 0;
 
   int subset = determine_subset(x, max);
-  int subset_size = max / SUBSETS;
+  int subset_size = subsets[subset].end - subsets[subset].start;
 
   int color_start, color_start2, delta, delta2;
 
   switch (subset) {
-  case 1:
+  case 0:
     color_start = -subset_size;
     delta = x - color_start;
 
     subset_colors.r = delta * 255 / (subset_size * 2);
     break;
 
-  case 2:
-    color_start = subset_size;
+  case 1:
+    color_start = subsets[subset - 1].end;
     delta = x - color_start;
 
     subset_colors.r = 255;
     subset_colors.g = delta * 255 / subset_size;
     break;
 
-  case 3:
-    color_start = subset_size * 2;
+  case 2:
+    color_start = subsets[subset - 1].end;
     delta = x - color_start;
 
-    color_start2 = subset_size * 2;
+    color_start2 = subsets[subset - 1].end;
     delta2 = x - color_start2;
 
     subset_colors.r = (subset_size - delta) * 255 / subset_size;
@@ -56,16 +72,16 @@ struct colors get_colors(int x, int max) {
     subset_colors.b = delta2 * 255 / subset_size;
     break;
 
-  case 4:
-    color_start = subset_size * 3;
+  case 3:
+    color_start = subsets[subset - 1].end;
     delta = x - color_start;
 
     subset_colors.g = (subset_size - delta) * 255 / subset_size;
     subset_colors.b = 255;
     break;
 
-  case 5:
-    color_start = subset_size * 4;
+  case 4:
+    color_start = subsets[subset - 1].end;
     delta = x - color_start;
 
     subset_colors.b = (subset_size * 2 - delta) * 255 / (subset_size * 2);
@@ -121,6 +137,8 @@ int main(int argc, char **argv) {
     width = atoi(argv[1]);
     height = atoi(argv[2]);
   }
+
+  init_subsets();
 
   GtkWidget *window;
 
