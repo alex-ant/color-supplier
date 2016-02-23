@@ -160,9 +160,13 @@ static gboolean on_status_draw_event(GtkWidget *widget, cairo_t *cr, gpointer da
 }
 
 void print_coordinate_colors(int x, int y) {
-  active_color = set_hue(y, height, get_colors(x, width));
-  gtk_widget_queue_draw(status_bar);
-  printf("R: %d, G: %d, B: %d\n", active_color.r, active_color.g, active_color.b);
+  if (x >= 0 && y >= 0 && x < width && y < height) {
+    active_color = set_hue(y, height, get_colors(x, width));
+    gtk_widget_queue_draw(status_bar);
+    printf("R: %d, G: %d, B: %d\n", active_color.r, active_color.g, active_color.b);
+  } else {
+    dragging = 0;
+  }
 }
 
 static gboolean on_press_event(GtkWidget *widget, GdkEventButton *event, gpointer data) {
