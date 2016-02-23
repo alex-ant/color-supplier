@@ -4,6 +4,7 @@
 
 int width = 800;
 int height = 512;
+int status_height = 20;
 
 const int SUBSETS = 8;
 subset subsets[8];
@@ -188,7 +189,7 @@ int main(int argc, char **argv) {
 
   g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
-  gtk_window_set_default_size(GTK_WINDOW(window), width, height);
+  gtk_window_set_default_size(GTK_WINDOW(window), width, height + status_height);
 
   GtkWidget *da;
   da = gtk_drawing_area_new();
@@ -203,7 +204,16 @@ int main(int argc, char **argv) {
                                                        | GDK_BUTTON_RELEASE_MASK
                                                        | GDK_POINTER_MOTION_MASK);
 
-  gtk_container_add(GTK_CONTAINER(window), da);
+  GtkWidget *status_bar;
+  status_bar = gtk_drawing_area_new();
+  gtk_widget_set_size_request(status_bar, width, status_height);
+
+  GtkWidget *fixed;
+  fixed = gtk_fixed_new();
+  gtk_container_add(GTK_CONTAINER(window), fixed);
+
+  gtk_fixed_put(GTK_FIXED(fixed), da, 0, 0);
+  gtk_fixed_put(GTK_FIXED(fixed), status_bar, 0, height);
 
   gtk_widget_show_all(window);
 
