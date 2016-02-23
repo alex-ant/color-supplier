@@ -144,12 +144,15 @@ static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer data) {
   return FALSE;
 }
 
+void print_coordinate_colors(int x, int y) {
+  struct colors c = set_hue(y, height, get_colors(x, width));
+  printf("R: %d, G: %d, B: %d\n", c.r, c.g, c.b);
+}
+
 static gboolean on_press_event(GtkWidget *widget, GdkEventButton *event, gpointer data) {
   if (event->button == GDK_BUTTON_PRIMARY) {
     dragging = 1;
-    int x = (int)event->x;
-    int y = (int)event->y;
-    printf("aa %d, %d\n", x, y);
+    print_coordinate_colors((int)event->x, (int)event->y);
   }
   return TRUE;
 }
@@ -163,9 +166,7 @@ static gboolean on_release_event(GtkWidget *widget, GdkEventButton *event, gpoin
 
 static gboolean on_motion_event(GtkWidget *widget, GdkEventMotion *event, gpointer data) {
   if (dragging == 1) {
-    int x = (int)event->x;
-    int y = (int)event->y;
-    printf("cc %d, %d\n", x, y);
+    print_coordinate_colors((int)event->x, (int)event->y);
   }
   return TRUE;
 }
