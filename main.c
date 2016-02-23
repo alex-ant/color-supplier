@@ -1,5 +1,6 @@
 #include "main.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 int width = 800;
 int height = 512;
@@ -111,6 +112,11 @@ static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer data) {
 }
 
 int main(int argc, char **argv) {
+  if (argc == 3) {
+    width = atoi(argv[1]);
+    height = atoi(argv[2]);
+  }
+
   GtkWidget *window;
 
   gtk_init(&argc, &argv);
