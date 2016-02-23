@@ -2,9 +2,9 @@
 #include <gtk/gtk.h>
 
 struct colors {
-   int r;
-   int g;
-   int b;
+  int r;
+  int g;
+  int b;
 };
 
 static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer data);

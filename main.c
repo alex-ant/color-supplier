@@ -9,7 +9,7 @@ const int SUBSETS = 5;
 int determine_subset(int x, int max) {
   int i;
   for (i = 1; i <= SUBSETS; i++) {
-    if (x >= max*(i-1)/SUBSETS && x <= max*i/SUBSETS) {
+    if (x >= max * (i - 1) / SUBSETS && x <= max * i / SUBSETS) {
       return i;
     }
   }
@@ -23,52 +23,52 @@ struct colors get_colors(int x, int max) {
   subset_colors.b = 0;
 
   int subset = determine_subset(x, max);
-  int subset_size = max/SUBSETS;
+  int subset_size = max / SUBSETS;
 
   int color_start, color_start2, delta, delta2;
 
   switch (subset) {
-      case 1:
-      color_start = -subset_size;
-      delta = x - color_start;
+  case 1:
+    color_start = -subset_size;
+    delta = x - color_start;
 
-      subset_colors.r = delta*255/(subset_size*2);
-      break;
+    subset_colors.r = delta * 255 / (subset_size * 2);
+    break;
 
-      case 2:
-      color_start = subset_size;
-      delta = x - color_start;
+  case 2:
+    color_start = subset_size;
+    delta = x - color_start;
 
-      subset_colors.r = 255;
-      subset_colors.g = delta*255/subset_size;
-      break;
+    subset_colors.r = 255;
+    subset_colors.g = delta * 255 / subset_size;
+    break;
 
-      case 3:
-      color_start = subset_size*2;
-      delta = x - color_start;
+  case 3:
+    color_start = subset_size * 2;
+    delta = x - color_start;
 
-      color_start2 = subset_size*2;
-      delta2 = x - color_start2;
+    color_start2 = subset_size * 2;
+    delta2 = x - color_start2;
 
-      subset_colors.r = (subset_size - delta)*255/subset_size;
-      subset_colors.g = 255;
-      subset_colors.b = delta2*255/subset_size;
-      break;
+    subset_colors.r = (subset_size - delta) * 255 / subset_size;
+    subset_colors.g = 255;
+    subset_colors.b = delta2 * 255 / subset_size;
+    break;
 
-      case 4:
-      color_start = subset_size*3;
-      delta = x - color_start;
+  case 4:
+    color_start = subset_size * 3;
+    delta = x - color_start;
 
-      subset_colors.g = (subset_size - delta)*255/subset_size;
-      subset_colors.b = 255;
-      break;
+    subset_colors.g = (subset_size - delta) * 255 / subset_size;
+    subset_colors.b = 255;
+    break;
 
-      case 5:
-      color_start = subset_size*4;
-      delta = x - color_start;
+  case 5:
+    color_start = subset_size * 4;
+    delta = x - color_start;
 
-      subset_colors.b = (subset_size*2 - delta)*255/(subset_size*2);
-      break;
+    subset_colors.b = (subset_size * 2 - delta) * 255 / (subset_size * 2);
+    break;
   }
 
   return subset_colors;
@@ -77,16 +77,16 @@ struct colors get_colors(int x, int max) {
 struct colors set_hue(int y, int max, struct colors subset_colors) {
   struct colors new_subset_colors;
 
-  int middle = max/2;
+  int middle = max / 2;
   int delta = y - middle;
   if (delta <= 0) {
-    new_subset_colors.r += -delta*(255-subset_colors.r)/middle;
-    new_subset_colors.g += -delta*(255-subset_colors.g)/middle;
-    new_subset_colors.b += -delta*(255-subset_colors.b)/middle;
+    new_subset_colors.r += -delta * (255 - subset_colors.r) / middle;
+    new_subset_colors.g += -delta * (255 - subset_colors.g) / middle;
+    new_subset_colors.b += -delta * (255 - subset_colors.b) / middle;
   } else {
-    new_subset_colors.r = (max-y)*subset_colors.r/middle;
-    new_subset_colors.g = (max-y)*subset_colors.g/middle;
-    new_subset_colors.b = (max-y)*subset_colors.b/middle;
+    new_subset_colors.r = (max - y) * subset_colors.r / middle;
+    new_subset_colors.g = (max - y) * subset_colors.g / middle;
+    new_subset_colors.b = (max - y) * subset_colors.b / middle;
   }
 
   return new_subset_colors;
@@ -100,7 +100,8 @@ static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer data) {
   for (x = 0; x < width; x++) {
     for (y = 0; y < height; y++) {
       struct colors c = set_hue(y, height, get_colors(x, width));
-      cairo_set_source_rgb(cr, (double)c.r / max, (double)c.g / max, (double)c.b / max);
+      cairo_set_source_rgb(cr, (double)c.r / max, (double)c.g / max,
+                           (double)c.b / max);
       cairo_rectangle(cr, x, y, 1, 1);
       cairo_fill(cr);
     }
