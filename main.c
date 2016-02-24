@@ -109,22 +109,17 @@ struct colors get_colors(int x, int max) {
   return subset_colors;
 }
 
-struct colors set_hue(int y, int max, struct colors subset_colors) {
+struct colors set_hue(int y, struct colors subset_colors) {
   struct colors new_subset_colors;
 
-  int middle = max / 2;
-  int delta = y - middle;
-  if (delta <= 0) {
-    new_subset_colors.r =
-        subset_colors.r - (delta * (255 - subset_colors.r) / middle);
-    new_subset_colors.g =
-        subset_colors.g - (delta * (255 - subset_colors.g) / middle);
-    new_subset_colors.b =
-        subset_colors.b - (delta * (255 - subset_colors.b) / middle);
+  if (y - (height / 2) <= 0) {
+    new_subset_colors.r = (2*subset_colors.r*y+255*height-510*y)/height;
+    new_subset_colors.g = (2*subset_colors.g*y+255*height-510*y)/height;
+    new_subset_colors.b = (2*subset_colors.b*y+255*height-510*y)/height;
   } else {
-    new_subset_colors.r = (max - y) * subset_colors.r / middle;
-    new_subset_colors.g = (max - y) * subset_colors.g / middle;
-    new_subset_colors.b = (max - y) * subset_colors.b / middle;
+    new_subset_colors.r = (2*subset_colors.r*(height-y))/height;
+    new_subset_colors.g = (2*subset_colors.g*(height-y))/height;
+    new_subset_colors.b = (2*subset_colors.b*(height-y))/height;
   }
 
   return new_subset_colors;
@@ -140,7 +135,7 @@ static gboolean on_da_draw_event(GtkWidget *widget, cairo_t *cr,
   for (x = 0; x < width; x++) {
     cx = get_colors(x, width);
     for (y = 0; y < height; y++) {
-      cy = set_hue(y, height, cx);
+      cy = set_hue(y, cx);
       cairo_set_source_rgb(cr, (double)cy.r / max, (double)cy.g / max,
                            (double)cy.b / max);
       cairo_rectangle(cr, x, y, 1, 1);
@@ -164,7 +159,7 @@ static gboolean on_status_draw_event(GtkWidget *widget, cairo_t *cr,
 
 void print_coordinate_colors(int x, int y) {
   if (x >= 0 && y >= 0 && x < width && y < height) {
-    active_color = set_hue(y, height, get_colors(x, width));
+    active_color = set_hue(y, get_colors(x, width));
     gtk_widget_queue_draw(status_bar);
     printf("%d,%d,%d\n", active_color.r, active_color.g, active_color.b);
   } else {
