@@ -10,11 +10,23 @@ $ ./run.sh 1200 600
 
 The app works the following way:
 * Press mouse's primary button over any color available in the generated palette
-* The app will throw an output in the format **"R: 104, G: 194, B: 255"**
+* The app will throw an output in the **"104,194,255"** format representing the corresponding RGB values
 * Move the mouse around the palette's area while keeping on pressing the button
 * The app will be producing an output of the same format for each pixel hit until the button is pressed.
 
 ![preview](https://raw.githubusercontent.com/alex-ant/color-supplier/master/images/demo.png)
+
+Sample output:
+```
+$ ./run.sh
+253,255,58
+251,255,57
+250,255,57
+248,255,56
+247,255,56
+244,255,55
+242,255,54
+```
 
 ### The Palette
 The palette is being dynamically generated using the following RGB pattern:
