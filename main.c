@@ -130,7 +130,8 @@ struct colors set_hue(int y, int max, struct colors subset_colors) {
   return new_subset_colors;
 }
 
-static gboolean on_da_draw_event(GtkWidget *widget, cairo_t *cr, gpointer data) {
+static gboolean on_da_draw_event(GtkWidget *widget, cairo_t *cr,
+                                 gpointer data) {
   cairo_set_line_width(cr, 1);
 
   double max = 255;
@@ -150,9 +151,11 @@ static gboolean on_da_draw_event(GtkWidget *widget, cairo_t *cr, gpointer data) 
   return FALSE;
 }
 
-static gboolean on_status_draw_event(GtkWidget *widget, cairo_t *cr, gpointer data) {
+static gboolean on_status_draw_event(GtkWidget *widget, cairo_t *cr,
+                                     gpointer data) {
   double max = 255;
-  cairo_set_source_rgb(cr, (double)active_color.r / max, (double)active_color.g / max,
+  cairo_set_source_rgb(cr, (double)active_color.r / max,
+                       (double)active_color.g / max,
                        (double)active_color.b / max);
   cairo_paint(cr);
 
@@ -163,13 +166,14 @@ void print_coordinate_colors(int x, int y) {
   if (x >= 0 && y >= 0 && x < width && y < height) {
     active_color = set_hue(y, height, get_colors(x, width));
     gtk_widget_queue_draw(status_bar);
-    printf("R: %d, G: %d, B: %d\n", active_color.r, active_color.g, active_color.b);
+    printf("%d,%d,%d\n", active_color.r, active_color.g, active_color.b);
   } else {
     dragging = 0;
   }
 }
 
-static gboolean on_press_event(GtkWidget *widget, GdkEventButton *event, gpointer data) {
+static gboolean on_press_event(GtkWidget *widget, GdkEventButton *event,
+                               gpointer data) {
   if (event->button == GDK_BUTTON_PRIMARY) {
     dragging = 1;
     print_coordinate_colors((int)event->x, (int)event->y);
@@ -177,14 +181,16 @@ static gboolean on_press_event(GtkWidget *widget, GdkEventButton *event, gpointe
   return TRUE;
 }
 
-static gboolean on_release_event(GtkWidget *widget, GdkEventButton *event, gpointer data) {
+static gboolean on_release_event(GtkWidget *widget, GdkEventButton *event,
+                                 gpointer data) {
   if (event->button == GDK_BUTTON_PRIMARY) {
     dragging = 0;
   }
   return TRUE;
 }
 
-static gboolean on_motion_event(GtkWidget *widget, GdkEventMotion *event, gpointer data) {
+static gboolean on_motion_event(GtkWidget *widget, GdkEventMotion *event,
+                                gpointer data) {
   if (dragging == 1) {
     print_coordinate_colors((int)event->x, (int)event->y);
   }
@@ -208,19 +214,22 @@ int main(int argc, char **argv) {
 
   g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
-  gtk_window_set_default_size(GTK_WINDOW(window), width, height + status_height);
+  gtk_window_set_default_size(GTK_WINDOW(window), width,
+                              height + status_height);
 
   da = gtk_drawing_area_new();
   gtk_widget_set_size_request(da, width, height);
 
   g_signal_connect(da, "draw", G_CALLBACK(on_da_draw_event), NULL);
-  g_signal_connect(da, "button-press-event", G_CALLBACK (on_press_event), NULL);
-  g_signal_connect(da, "button-release-event", G_CALLBACK (on_release_event), NULL);
-  g_signal_connect(da, "motion-notify-event", G_CALLBACK (on_motion_event), NULL);
+  g_signal_connect(da, "button-press-event", G_CALLBACK(on_press_event), NULL);
+  g_signal_connect(da, "button-release-event", G_CALLBACK(on_release_event),
+                   NULL);
+  g_signal_connect(da, "motion-notify-event", G_CALLBACK(on_motion_event),
+                   NULL);
 
-  gtk_widget_set_events (da, gtk_widget_get_events(da) | GDK_BUTTON_PRESS_MASK
-                                                       | GDK_BUTTON_RELEASE_MASK
-                                                       | GDK_POINTER_MOTION_MASK);
+  gtk_widget_set_events(da, gtk_widget_get_events(da) | GDK_BUTTON_PRESS_MASK |
+                                GDK_BUTTON_RELEASE_MASK |
+                                GDK_POINTER_MOTION_MASK);
 
   status_bar = gtk_drawing_area_new();
   gtk_widget_set_size_request(status_bar, width, status_height);
