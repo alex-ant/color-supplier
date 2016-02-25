@@ -113,13 +113,16 @@ struct colors set_hue(int y, struct colors subset_colors) {
   struct colors new_subset_colors;
 
   if (y <= height / 2) {
-    new_subset_colors.r = (2*subset_colors.r*y+255*height-510*y)/height;
-    new_subset_colors.g = (2*subset_colors.g*y+255*height-510*y)/height;
-    new_subset_colors.b = (2*subset_colors.b*y+255*height-510*y)/height;
+    new_subset_colors.r =
+        (2 * subset_colors.r * y + 255 * height - 510 * y) / height;
+    new_subset_colors.g =
+        (2 * subset_colors.g * y + 255 * height - 510 * y) / height;
+    new_subset_colors.b =
+        (2 * subset_colors.b * y + 255 * height - 510 * y) / height;
   } else {
-    new_subset_colors.r = (2*subset_colors.r*(height-y))/height;
-    new_subset_colors.g = (2*subset_colors.g*(height-y))/height;
-    new_subset_colors.b = (2*subset_colors.b*(height-y))/height;
+    new_subset_colors.r = (2 * subset_colors.r * (height - y)) / height;
+    new_subset_colors.g = (2 * subset_colors.g * (height - y)) / height;
+    new_subset_colors.b = (2 * subset_colors.b * (height - y)) / height;
   }
 
   return new_subset_colors;
